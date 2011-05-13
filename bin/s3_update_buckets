@@ -1,0 +1,26 @@
+#!/usr/bin/ruby
+require 'rubygems'
+require 'yaml'
+require 'date'
+require File.expand_path('..', __FILE__) + '/s3_manager'
+
+if ARGV.size != 1 or not File.exists?(ARGV[0])
+  p "no filename or file does not exists..."
+  exit
+end
+
+config = YAML.load_file(ARGV[0])
+
+@s3_manager = S3Manager.new(
+        config['access_key'],
+        config['secret_key'],
+        config['bucket_names'])
+
+def log str
+  now = DateTime.now.strftime('%Y-%m-%d %H:%M:%S')
+  p "#{now} - #{str}"
+end
+
+log "starting to delete bucket"
+@s3_manager.delete
+log "end to delete bucket"
